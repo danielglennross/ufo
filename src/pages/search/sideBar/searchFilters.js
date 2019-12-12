@@ -129,9 +129,10 @@ function QuickTime({ classes }) {
 
 function RelativeTime({ classes }) {
   const { searchFilterState, dispatch } = useContext(SearchContext);
-
   // TODO use searchFilterState to set initial states
-  const [numberValue, setNumberValue] = useState(24);
+  const [numberValue, setNumberValue] = useState(
+    searchFilterState.dateTime.relative
+  );
   const handleNumberChange = event => {
     setNumberValue(event.target.value);
     dispatch({

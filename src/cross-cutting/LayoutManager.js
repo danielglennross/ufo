@@ -3,13 +3,10 @@ import { Switch, Route } from "react-router-dom";
 import DefaultLayout from "../../src/cross-cutting/DefaultLayout";
 import SearchLayout from "../../src/cross-cutting/SearchLayout";
 import SideBar from "../../src/pages/search/SideBar";
+import Page from "../../src/pages/search/Page";
 
 function Test1() {
   return <p>hello world 1</p>;
-}
-
-function Test2() {
-  return <p>hello world 2</p>;
 }
 
 export default function LayoutManager() {
@@ -24,7 +21,7 @@ export default function LayoutManager() {
       <Route
         path="/"
         render={() => (
-          <SearchLayout sideBarContent={SideBar} pageContent={Test2} />
+          <SearchLayout sideBarContent={SideBar} pageContent={Page} />
         )}
       />
     </Switch>
