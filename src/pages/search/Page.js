@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import LinearProgress from "@material-ui/core/LinearProgress";
-import { ReactDiagram } from "react-gojs";
+import { ReactDiagram } from "gojs-react";
 import { SearchContext } from "../../cross-cutting/SearchLayout";
 import { buildNodesFromLogHits, buildsGoDiagramFromNodes } from "./processor";
 
@@ -17,6 +17,11 @@ const useStyles = makeStyles(theme => ({
   page: {
     marginTop: "20px",
     padding: "10px"
+  },
+  diagram: {
+    width: "400px",
+    height: "400px",
+    border: "solid 1px black"
   }
 }));
 
@@ -104,7 +109,7 @@ export default function SearchPage() {
   const expectedNodes = [
     {
       render: {
-        key: "1",
+        key: 1,
         displayName: "a",
         flowKind: "success"
       },
@@ -116,7 +121,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: "2",
+        key: 2,
         displayName: "b",
         flowKind: "success"
       },
@@ -130,8 +135,9 @@ export default function SearchPage() {
 
   const expectedEdges = [
     {
-      from: "1",
-      to: "2"
+      key: -1,
+      from: 1,
+      to: 2
     }
   ];
 
@@ -141,6 +147,14 @@ export default function SearchPage() {
     data.hits.hits
   );
 
+  if (nodes.result && nodes.result === "error") {
+    return (
+      <Paper className={classes.page}>
+        <p>{nodes.message}</p>
+      </Paper>
+    );
+  }
+
   const nodesAndEdges = {
     nodeDataArray: nodes,
     linkDataArray: expectedEdges
@@ -149,12 +163,10 @@ export default function SearchPage() {
   return (
     <Paper className={classes.page}>
       <ReactDiagram
+        initDiagram={buildsGoDiagramFromNodes}
+        divClassName={classes.diagram}
         nodeDataArray={nodesAndEdges.nodeDataArray}
         linkDataArray={nodesAndEdges.linkDataArray}
-        initDiagram={buildsGoDiagramFromNodes}
-        //className="myDiagram"
-        //onModelChange={this.modelChangedhandler}
-        //updateDiagramProps={this.updateDiagramProps}
       />
     </Paper>
   );

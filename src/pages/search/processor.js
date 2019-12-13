@@ -37,7 +37,10 @@ export function buildsGoDiagramFromNodes() {
 
   const diagram = $(go.Diagram, {
     layout: $(go.LayeredDigraphLayout),
-    "undoManager.isEnabled": true
+    "undoManager.isEnabled": true,
+    model: $(go.GraphLinksModel, {
+      linkKeyProperty: "key"
+    })
   });
 
   // diagram.toolTip = $(
