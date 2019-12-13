@@ -108,7 +108,7 @@ export default function SearchPage() {
   const expectedNodes = [
     {
       render: {
-        key: 1,
+        key: "start-registration",
         displayName: "Start Registration",
         flowKind: "success",
         fig: "Ellipse"
@@ -121,7 +121,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 2,
+        key: "check-player-approval",
         displayName: "Check Player Approval",
         flowKind: "success",
         fig: "RoundedRectangle"
@@ -134,7 +134,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 3,
+        key: "create-profile",
         displayName: "Create Profile",
         flowKind: "success",
         fig: "RoundedRectangle"
@@ -147,7 +147,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 4,
+        key: "create-identity",
         displayName: "Create Identity",
         flowKind: "success",
         fig: "RoundedRectangle"
@@ -160,7 +160,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 5,
+        key: "create-wallet",
         displayName: "Create Wallet",
         flowKind: "success",
         fig: "RoundedRectangle"
@@ -173,7 +173,33 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 6,
+        key: "check-kyc",
+        displayName: "Check KYC",
+        flowKind: "success",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "Warning",
+        messageRegex: /KYC Result:/,
+        type: "kycservice"
+      }
+    },
+    {
+      render: {
+        key: "signal-registration-completed",
+        displayName: "Signal Registration Completed",
+        flowKind: "success",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "Debug",
+        messageRegex: /Publishing digital registration complete event for/,
+        type: "registration"
+      }
+    },
+    {
+      render: {
+        key: "registration-completed",
         displayName: "Registration Completed",
         flowKind: "success",
         fig: "Ellipse"
@@ -186,7 +212,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 7,
+        key: "registration-failed",
         displayName: "Registration Failed",
         flowKind: "failure",
         fig: "Ellipse"
@@ -199,7 +225,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 8,
+        key: "delete-profile",
         displayName: "Delete Profile",
         flowKind: "failure",
         fig: "RoundedRectangle"
@@ -212,7 +238,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 9,
+        key: "delete-identity",
         displayName: "Delete Identity",
         flowKind: "failure",
         fig: "RoundedRectangle"
@@ -225,7 +251,7 @@ export default function SearchPage() {
     },
     {
       render: {
-        key: 10,
+        key: "delete-wallet",
         displayName: "Delete Wallet",
         flowKind: "failure",
         fig: "RoundedRectangle"
@@ -235,57 +261,116 @@ export default function SearchPage() {
         messageRegex: /jhshshshsh/,
         type: ""
       }
+    },
+    {
+      render: {
+        key: "create-es-profile",
+        displayName: "Create ES Profile",
+        flowKind: "async-success",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "Debug",
+        messageRegex: /ElasticSearch upsert success/,
+        type: "cemlog"
+      }
+    },
+    {
+      render: {
+        key: "apply-registration-bonus",
+        displayName: "Apply Registration Bonuses",
+        flowKind: "async-success",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "Information",
+        messageRegex: /player has no eligible player registration bonuses/,
+        type: "BonusToolService"
+      }
+    },
+    {
+      render: {
+        key: "delete-es-profile",
+        displayName: "Delete ES Profile",
+        flowKind: "async-fail",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "",
+        messageRegex: /ggghg/,
+        type: ""
+      }
     }
   ];
 
   const expectedEdges = [
     {
-      from: 1,
-      to: 2
+      from: "start-registration",
+      to: "check-player-approval"
     },
     {
-      from: 2,
-      to: 3
+      from: "check-player-approval",
+      to: "create-profile"
     },
     {
-      from: 3,
-      to: 4
+      from: "create-profile",
+      to: "create-identity"
     },
     {
-      from: 4,
-      to: 5
+      from: "create-identity",
+      to: "create-wallet"
     },
     {
-      from: 5,
-      to: 6
+      from: "create-wallet",
+      to: "check-kyc"
     },
     {
-      from: 2,
-      to: 7
+      from: "check-kyc",
+      to: "signal-registration-completed"
     },
     {
-      from: 3,
-      to: 8
+      from: "signal-registration-completed",
+      to: "registration-completed"
     },
     {
-      from: 8,
-      to: 7
+      from: "check-player-approval",
+      to: "registration-failed"
     },
     {
-      from: 4,
-      to: 9
+      from: "create-profile",
+      to: "delete-profile"
     },
     {
-      from: 9,
-      to: 8
+      from: "delete-profile",
+      to: "registration-failed"
     },
     {
-      from: 5,
-      to: 10
+      from: "create-identity",
+      to: "delete-identity"
     },
     {
-      from: 10,
-      to: 9
+      from: "delete-identity",
+      to: "delete-profile"
+    },
+    {
+      from: "create-wallet",
+      to: "delete-wallet"
+    },
+    {
+      from: "delete-wallet",
+      to: "delete-identity"
+    },
+    {
+      from: "create-profile",
+      to: "create-es-profile"
+    },
+    {
+      from: "signal-registration-completed",
+      to: "apply-registration-bonus"
+    },
+    {
+      from: "delete-profile",
+      to: "delete-es-profile"
     }
   ];
 

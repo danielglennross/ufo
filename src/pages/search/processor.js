@@ -22,7 +22,20 @@ export function buildNodesFromLogHits(token, nodes, hits) {
       );
     });
     const renderAttr = n.render;
+
+    const meta = (() => {
+      if (matchHit) {
+        return {
+          id: matchHit._id,
+          type: matchHit._type,
+          index: matchHit._index
+        };
+      }
+      return null;
+    })();
+
     return {
+      meta,
       key: renderAttr.key,
       displayName: renderAttr.displayName,
       color: matchHit ? "lightsalmon" : "lightblue",
@@ -45,6 +58,8 @@ export function buildsGoDiagramFromNodes() {
   const diagram = $(go.Diagram, {
     layout: $(go.LayeredDigraphLayout),
     "undoManager.isEnabled": true,
+    initialScale: 0.65,
+    allowHorizontalScroll: true,
     model: $(go.GraphLinksModel, {
       linkKeyProperty: "key"
     })
@@ -67,7 +82,13 @@ export function buildsGoDiagramFromNodes() {
     {
       cursor: "pointer",
       click: function(e, obj) {
-        //window.open("http://" + encodeURIComponent(obj.part.data.url));
+        if (!obj.part.data.meta) {
+          return e.event.preventDefault();
+        }
+        const { index, type, id } = obj.part.data.meta;
+        window.open(
+          `https://kibana.bedegaming.net/?#/doc/log-bde_qa02-*/${index}/${type}/?id=${id}`
+        );
       }
     },
     $(
@@ -102,7 +123,27 @@ export function buildsGoDiagramFromNodes() {
         //strokeWidth: 2
       },
       new go.Binding("stroke", "toNode", function(n) {
-        return n.data.flowKind === "success" ? "green" : "red";
+        switch (n.data.flowKind) {
+          case "success":
+            return "green";
+          case "failure":
+            return "red";
+          case "async-success":
+            return "green";
+          case "async-fail":
+            return "red";
+          default:
+            return "lightblue";
+        }
+      }).ofObject(),
+      new go.Binding("strokeDashArray", "toNode", function(n) {
+        switch (n.data.flowKind) {
+          case "async-success":
+          case "async-fail":
+            return [10, 10];
+          default:
+            return [];
+        }
       }).ofObject(),
       new go.Binding("strokeWidth", "toNode", function(n) {
         return n.data.flowKind === "success" ? 3 : 1;
