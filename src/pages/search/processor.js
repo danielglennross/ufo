@@ -1,4 +1,5 @@
 import go from "gojs";
+import { pick } from "lodash";
 
 export function buildNodesFromLogHits(token, nodes, hits) {
   const matchingLogHits = hits.filter(
@@ -17,7 +18,7 @@ export function buildNodesFromLogHits(token, nodes, hits) {
       return (
         hit._source.level === logAttr.level &&
         hit._type === logAttr.type &&
-        new RegExp(logAttr.messageRegex).test(hit._source.message)
+        logAttr.messageRegex.test(hit._source.message)
       );
     });
     const renderAttr = n.render;
@@ -25,9 +26,15 @@ export function buildNodesFromLogHits(token, nodes, hits) {
       key: renderAttr.key,
       displayName: renderAttr.displayName,
       color: matchHit ? "lightsalmon" : "lightblue",
-      fig: "RoundedRectangle",
+      fig: renderAttr.fig,
       flowKind: renderAttr.flowKind,
-      tooltip: matchHit ? JSON.stringify(matchHit._source) : "no-log-found"
+      tooltip: matchHit
+        ? JSON.stringify(
+            pick(matchHit._source, ["duration", "category", "message"]),
+            null,
+            2
+          )
+        : "Event not found"
     };
   });
 }
@@ -107,9 +114,6 @@ export function buildsGoDiagramFromNodes() {
       new go.Binding("fill", "color")
     )
   );
-
-  //diagram.model.nodeDataArray = nodes;
-  //diagram.model.linkDataArray = edges;
 
   return diagram;
 }

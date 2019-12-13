@@ -19,9 +19,8 @@ const useStyles = makeStyles(theme => ({
     padding: "10px"
   },
   diagram: {
-    width: "400px",
-    height: "400px",
-    border: "solid 1px black"
+    width: "100%",
+    height: "400px"
   }
 }));
 
@@ -73,7 +72,7 @@ export default function SearchPage() {
                       {
                         range: {
                           "@timestamp": {
-                            gte: Date.now() - 1000 * 60 * 15,
+                            gte: Date.now() - 1000 * 60 * 120,
                             lte: Date.now()
                           }
                         }
@@ -110,34 +109,183 @@ export default function SearchPage() {
     {
       render: {
         key: 1,
-        displayName: "a",
-        flowKind: "success"
+        displayName: "Start Registration",
+        flowKind: "success",
+        fig: "Ellipse"
       },
       log: {
-        level: "Debug",
-        messageRegex: "Sending message",
-        type: "unknown"
+        level: "Information",
+        messageRegex: /\/api\/register/,
+        type: "metrics"
       }
     },
     {
       render: {
         key: 2,
-        displayName: "b",
-        flowKind: "success"
+        displayName: "Check Player Approval",
+        flowKind: "success",
+        fig: "RoundedRectangle"
       },
       log: {
         level: "Information",
-        messageRegex: "Catalogue update event",
+        messageRegex: /Player approval response: Player \[[0-9]+\] StatusCode \[Approved\]/,
         type: "unknown"
+      }
+    },
+    {
+      render: {
+        key: 3,
+        displayName: "Create Profile",
+        flowKind: "success",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "Information",
+        messageRegex: /RESPONSE: 201 "http:\/\/(.+)\/api\/profiles\/summary"/,
+        type: "metrics"
+      }
+    },
+    {
+      render: {
+        key: 4,
+        displayName: "Create Identity",
+        flowKind: "success",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "Information",
+        messageRegex: /RESPONSE: 201 "http:\/\/(.+)\/api\/identity"/,
+        type: "metrics"
+      }
+    },
+    {
+      render: {
+        key: 5,
+        displayName: "Create Wallet",
+        flowKind: "success",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "Information",
+        messageRegex: /RESPONSE: 201 "http:\/\/(.+)\/v4\/wallets"/,
+        type: "metrics"
+      }
+    },
+    {
+      render: {
+        key: 6,
+        displayName: "Registration Completed",
+        flowKind: "success",
+        fig: "Ellipse"
+      },
+      log: {
+        level: "Information",
+        messageRegex: /RESPONSE: 201 "http:\/\/(.+)\/api\/register"/,
+        type: "metrics"
+      }
+    },
+    {
+      render: {
+        key: 7,
+        displayName: "Registration Failed",
+        flowKind: "failure",
+        fig: "Ellipse"
+      },
+      log: {
+        level: "",
+        messageRegex: /jhshshshsh/,
+        type: ""
+      }
+    },
+    {
+      render: {
+        key: 8,
+        displayName: "Delete Profile",
+        flowKind: "failure",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "",
+        messageRegex: /jhshshshsh/,
+        type: ""
+      }
+    },
+    {
+      render: {
+        key: 9,
+        displayName: "Delete Identity",
+        flowKind: "failure",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "",
+        messageRegex: /jhshshshsh/,
+        type: ""
+      }
+    },
+    {
+      render: {
+        key: 10,
+        displayName: "Delete Wallet",
+        flowKind: "failure",
+        fig: "RoundedRectangle"
+      },
+      log: {
+        level: "",
+        messageRegex: /jhshshshsh/,
+        type: ""
       }
     }
   ];
 
   const expectedEdges = [
     {
-      key: -1,
       from: 1,
       to: 2
+    },
+    {
+      from: 2,
+      to: 3
+    },
+    {
+      from: 3,
+      to: 4
+    },
+    {
+      from: 4,
+      to: 5
+    },
+    {
+      from: 5,
+      to: 6
+    },
+    {
+      from: 2,
+      to: 7
+    },
+    {
+      from: 3,
+      to: 8
+    },
+    {
+      from: 8,
+      to: 7
+    },
+    {
+      from: 4,
+      to: 9
+    },
+    {
+      from: 9,
+      to: 8
+    },
+    {
+      from: 5,
+      to: 10
+    },
+    {
+      from: 10,
+      to: 9
     }
   ];
 
