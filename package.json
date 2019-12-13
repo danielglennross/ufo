@@ -16,7 +16,6 @@
     "gojs-react": "^1.0.4",
     "react": "^16.10.1",
     "react-dom": "^16.10.1",
-    "react-gojs": "^4.5.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
     "typescript": "^3.6.3"
